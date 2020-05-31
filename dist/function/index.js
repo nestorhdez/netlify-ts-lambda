@@ -52,7 +52,7 @@ var handler = function (event, context) { return __awaiter(void 0, void 0, void 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4, node_fetch_1["default"]("https://jsonplaceholder.typicode.com/todos/" + todo)];
+                return [4, node_fetch_1["default"]("https://jsonplaceholder.typicode.com/todos/" + todo).then(function (res) { return res.json(); })];
             case 2:
                 response = _a.sent();
                 return [2, {

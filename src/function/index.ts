@@ -18,7 +18,9 @@ const handler = async (event: APIGatewayEvent, context: Context) => {
     }
   }
   try {
-    const response: Todo[] = await fetch(`https://jsonplaceholder.typicode.com/todos/${todo}`);
+    const response: Todo[] =
+      await fetch(`https://jsonplaceholder.typicode.com/todos/${todo}`).then(res => res.json());
+
     return {
       statusCode: 200,
       body: JSON.stringify({
