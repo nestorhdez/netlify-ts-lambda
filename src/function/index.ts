@@ -1,21 +1,38 @@
 import {APIGatewayEvent, Context} from 'aws-lambda';
+import fetch from 'node-fetch';
+
+interface Todo {
+  "userId": number,
+  "id": number,
+  "title": string,
+  "completed": boolean
+}
 
 const handler = async (event: APIGatewayEvent, context: Context) => {
-  const { name } = event.queryStringParameters;
+  const { todo } = event.queryStringParameters;
   
-  if(!name) {
+  if(!todo) {
     return {
       statusCode: 200,
-      body: "Name param needed."
+      body: "todo param needed."
     }
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      result: `Hello ${name}!`
-    })
-  };
+  try {
+    const response: Todo[] = await fetch(`https://jsonplaceholder.typicode.com/todos/${todo}`);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        response
+      })
+    };
+  } catch(error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error
+      })
+    }
+  }
 };
 
 export { handler };
