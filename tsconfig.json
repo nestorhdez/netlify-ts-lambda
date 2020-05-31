@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "removeComments": true,
+        "module": "commonjs",
+        "lib": ["es2015", "dom"],
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "downlevelIteration": true,
+        "outDir": "dist/function",
+        "baseUrl": ".",
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
