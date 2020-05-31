@@ -4,7 +4,8 @@
   "description": "Netlify TypeScript function template",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir lambda; npm run build:src; npm run build:modules; npm run build:zipped",
+    "build": "npm run build:directories; npm run build:src; npm run build:modules; npm run build:zipped",
+    "build:directories": "mkdir lambda; mkdir -p dist/function",
     "build:src": "cd src/function; npm i; tsc;",
     "build:modules": "cd src/function; mv node_modules/* ../../dist/function/node_modules; rm -rf node_modules;",
     "build:zipped": "cd dist; zip -r ../lambda/function.zip function;"
