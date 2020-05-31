@@ -36,22 +36,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var node_fetch_1 = require("node-fetch");
 var handler = function (event, context) { return __awaiter(void 0, void 0, void 0, function () {
-    var name;
+    var todo, response, error_1;
     return __generator(this, function (_a) {
-        name = event.queryStringParameters.name;
-        if (!name) {
-            return [2, {
-                    statusCode: 200,
-                    body: "Name param needed."
-                }];
+        switch (_a.label) {
+            case 0:
+                todo = event.queryStringParameters.todo;
+                if (!todo) {
+                    return [2, {
+                            statusCode: 200,
+                            body: "todo param needed."
+                        }];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4, node_fetch_1["default"]("https://jsonplaceholder.typicode.com/todos/" + todo)];
+            case 2:
+                response = _a.sent();
+                return [2, {
+                        statusCode: 200,
+                        body: JSON.stringify({
+                            response: response
+                        })
+                    }];
+            case 3:
+                error_1 = _a.sent();
+                return [2, {
+                        statusCode: 500,
+                        body: JSON.stringify({
+                            error: error_1
+                        })
+                    }];
+            case 4: return [2];
         }
-        return [2, {
-                statusCode: 200,
-                body: JSON.stringify({
-                    result: "Hello " + name + "!"
-                })
-            }];
     });
 }); };
 exports.handler = handler;
