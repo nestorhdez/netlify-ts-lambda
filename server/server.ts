@@ -2,7 +2,7 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { Application, Request, Response, Router } from 'express';
 
-import { handler } from '../src/function/index';
+import { handler } from '../src/function/function';
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
