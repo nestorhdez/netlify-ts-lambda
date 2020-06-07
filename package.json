@@ -10,9 +10,7 @@
     "deploy": "mkdir lambda; mkdir ./dist/function/node_modules; npm i; npm run deploy:modules; npm run deploy:zipped;"
   },
   "license": "ISC",
-  "dependencies": {
-    "node-fetch": "^2.6.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
     "@types/node": "^14.0.5"
