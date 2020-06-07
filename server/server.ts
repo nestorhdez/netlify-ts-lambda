@@ -19,7 +19,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
-router.get('/', async (req: Request, res: Response) => {
+const parseResponse = (body: string): string | object => {
+  let response;
+  try {
+    response = JSON.parse(body);
+  } catch {
+    response = body
+  }finally {
+    return response;
+  }
+}
+
+router.all('/', async (req: Request, res: Response) => {
 
   const lambdaEvent = {
     body: req.body,
@@ -29,10 +40,14 @@ router.get('/', async (req: Request, res: Response) => {
     path: req.path,
     pathParameters: req.params
   }
-  
-  const { body, statusCode } = await handler((lambdaEvent as APIGatewayEvent), ({} as Context));
 
-  res.status(statusCode).json(JSON.parse(body));
+  try {
+    const { body, statusCode } = await handler((lambdaEvent as APIGatewayEvent), ({} as Context));
+    const responseParsed = parseResponse(body);
+    res.status(statusCode).json(responseParsed);
+  } catch(error) {
+    res.status(400).json({error});
+  }
 });
 
 app.use('/', router);
