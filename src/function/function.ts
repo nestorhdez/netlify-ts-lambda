@@ -1,6 +1,9 @@
-import {APIGatewayEvent, Context} from 'aws-lambda';
+import {APIGatewayEvent, APIGatewayProxyResult, Context, Handler} from 'aws-lambda';
 
-const handler = async (event: APIGatewayEvent, context: Context) => {
+const handler: Handler = async (
+  event: APIGatewayEvent,
+  context: Context
+): Promise<APIGatewayProxyResult> => {
   const { name } = event.queryStringParameters;
 
   if(!name) {
