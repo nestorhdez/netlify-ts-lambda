@@ -1,8 +1,6 @@
-'use strict';
 import { APIGatewayEvent, Context } from 'aws-lambda';
-import { Application, Request, Response, Router } from 'express';
-
-import { handler } from '../src/function/function';
+import { Application, Request, Response } from 'express';
+import { readdirSync } from 'fs';
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -12,7 +10,6 @@ const helmet = require('helmet');
 const port = process.env["PORT"] || 3000;
 
 const app: Application = express();
-const router: Router = express.Router();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -30,28 +27,36 @@ const parseResponse = (body: string): string | object => {
   }
 }
 
-router.all('/', async (req: Request, res: Response) => {
+(async () => {
 
-  const lambdaEvent = {
-    body: req.body,
-    queryStringParameters: req.query,
-    httpMethod: req.method,
-    headers: req.headers,
-    path: req.path,
-    pathParameters: req.params
+  const functions = readdirSync('./src').map(async dir => {
+    let { handler } = await import(`../src/${dir}/${dir}`);
+    return { dir, handler }
+  });
+
+  for await (const {dir, handler} of functions) {
+    app.all(`/${dir}/`, async (req: Request, res: Response) => {
+      const lambdaEvent = {
+        body: req.body,
+        queryStringParameters: req.query,
+        httpMethod: req.method,
+        headers: req.headers,
+        path: req.path,
+        pathParameters: req.params
+      }
+
+      try {
+        const { body, statusCode } = await handler((lambdaEvent as APIGatewayEvent), ({} as Context));
+        const responseParsed = parseResponse(body);
+        res.status(statusCode).json(responseParsed);
+      } catch(error) {
+        res.status(400).json({error});
+      }
+    });
   }
 
-  try {
-    const { body, statusCode } = await handler((lambdaEvent as APIGatewayEvent), ({} as Context));
-    const responseParsed = parseResponse(body);
-    res.status(statusCode).json(responseParsed);
-  } catch(error) {
-    res.status(400).json({error});
-  }
-});
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
+  });
 
-app.use('/', router);
-
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+})();
