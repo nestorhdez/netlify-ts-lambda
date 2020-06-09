@@ -4,7 +4,7 @@
   "description": "Run locally Netlify TypeScript function",
   "main": "index.ts",
   "scripts": {
-    "server": "ts-node ./server.ts"
+    "server": "nodemon"
   },
   "license": "ISC",
   "dependencies": {
