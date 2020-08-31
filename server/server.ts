@@ -29,31 +29,36 @@ const parseResponse = (body: string): string | object => {
 
 (async () => {
 
-  const functions = readdirSync('./src').map(async dir => {
+  const endpoints: {[key: string]: ({}: APIGatewayEvent, {}: Context) => any} = {};
+
+  console.log('Functions:');
+
+  await readdirSync('./src').map(async dir => {
     let { handler } = await import(`../src/${dir}/${dir}`);
-    return { dir, handler }
+    console.log(`- ${dir}`);
+    endpoints[dir] = handler;
   });
 
-  for await (const {dir, handler} of functions) {
-    app.all(`/${dir}/`, async (req: Request, res: Response) => {
-      const lambdaEvent = {
-        body: req.body,
-        queryStringParameters: req.query,
-        httpMethod: req.method,
-        headers: req.headers,
-        path: req.path,
-        pathParameters: req.params
-      }
+  app.all('/:endpoint', async (req: Request, res: Response) => {
+    const { endpoint } = req.params;
+    
+    const lambdaEvent = {
+      body: req.body,
+      queryStringParameters: req.query,
+      httpMethod: req.method,
+      headers: req.headers,
+      path: req.path,
+      pathParameters: req.params
+    }
 
-      try {
-        const { body, statusCode } = await handler((lambdaEvent as APIGatewayEvent), ({} as Context));
-        const responseParsed = parseResponse(body);
-        res.status(statusCode).json(responseParsed);
-      } catch(error) {
-        res.status(400).json({error});
-      }
-    });
-  }
+    try {
+      const { body, statusCode } = await endpoints[endpoint]((lambdaEvent as APIGatewayEvent), ({} as Context));
+      const responseParsed = parseResponse(body);
+      res.status(statusCode).json(responseParsed);
+    } catch(error) {
+      res.status(400).json({error});
+    }
+  });
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
