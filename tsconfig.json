@@ -6,11 +6,12 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "downlevelIteration": true,
-        "outDir": "dist/",
+        "outDir": "dist",
+        "rootDir": "src",
         "baseUrl": ".",
     },
     "include": [
-        "src/**/*"
+        "src"
     ],
     "exclude": [
         "node_modules",
