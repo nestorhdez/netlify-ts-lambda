@@ -31,13 +31,13 @@ const parseResponse = (body: string): string | object => {
 
   const endpoints: {[key: string]: ({}: APIGatewayEvent, {}: Context) => any} = {};
 
-  console.log('Functions:');
+  console.log('\n Functions:');
 
-  await readdirSync('./src').map(async dir => {
-    let { handler } = await import(`../src/${dir}/${dir}`);
+  for (const dir of readdirSync('./src')) {
     console.log(`- ${dir}`);
+    let { handler } = await import(`../src/${dir}/${dir}`);
     endpoints[dir] = handler;
-  });
+  }
 
   app.all('/:endpoint', async (req: Request, res: Response) => {
     const { endpoint } = req.params;
@@ -61,7 +61,7 @@ const parseResponse = (body: string): string | object => {
   });
 
   app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+    console.log(`\n Server is listening on: http://localhost:${port}`);
   });
 
 })();
