@@ -10,6 +10,6 @@ By default the port is 3000. You can set it using the `PORT` env variable.
 
 ## Deploy
 
-- Run `npm run deploy`
+- Run `npm run build`
 - Push the branch with the dist folder to github
 - Set this branch on netlify as `Production branch`

@@ -4,10 +4,8 @@
   "description": "Netlify TypeScript function template",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p dist/function; npm i; tsc;",
-    "deploy:modules": "mv node_modules/* ./dist/function/node_modules; rm -rf node_modules;",
-    "deploy:zipped": "cd dist; zip -r ../lambda/function.zip function;",
-    "deploy": "mkdir lambda; mkdir ./dist/function/node_modules; npm i; npm run deploy:modules; npm run deploy:zipped;",
+    "build": "npm i; tsc;",
+    "deploy": "bash deploy.sh",
     "server": "nodemon"
   },
   "license": "ISC",
